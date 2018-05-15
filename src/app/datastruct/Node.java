@@ -1,7 +1,6 @@
 package app.datastruct;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Node<T> {
     private List<Node<T>> children = new ArrayList<Node<T>>();
@@ -86,23 +85,47 @@ public class Node<T> {
         this.weight = weight;
     }
 
-    /*public List<Node<T>> getAllProperSubtrees(int maxWeight){
+    public List<Node<T>> getAllProperSubtrees(int maxWeight){
         List<Node<T>> resultList = new ArrayList<>();
-        if(this.weight <= maxWeight)
+        int curWeight = 0;
+        //List<Node<T>> level = new ArrayList<>();
+        Queue<Node<T>> level = new LinkedList<> ();
+        //может стэк из List<Node>? и добавляем children
+        Stack<Node<T>> stack = new Stack<>();
+        Node<T> top = this;
+        do{
+            if(top.weight + curWeight <= maxWeight){
+                stack.push(top);
+            }
+            else {
+
+            }
+            //
+            level.addAll(top.children);
+            if(!level.isEmpty()){
+                top = level.poll();
+            }
+
+        }while (!stack.isEmpty());
+
+
+        /*if(this.weight <= maxWeight)
             resultList.add(this);
         else
             return resultList;
         for (Node<T> node : this.children) {
 
-        }
-        return  resultList;
-    }*/
+        }*/
 
-    public List<Node<T>> getSubtree(int maxWeight, int curWeight, List<Node<T>> subtree){
+
+        return  resultList;
+    }
+
+    /*public List<Node<T>> getSubtree(int maxWeight, int curWeight, List<Node<T>> subtree){
 
 
         return subtree;
-    }
+    }*/
 
 
 }
