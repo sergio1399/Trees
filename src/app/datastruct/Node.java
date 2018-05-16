@@ -8,6 +8,9 @@ public class Node<T> {
     private T data = null;
     private int weight = 0;
 
+    //private List< Stack<Node<T>> > subtrees = new ArrayList<>();
+    private static int maxSubWeight = 13;
+
     public Node(T data) {
         this.data = data;
     }
@@ -27,6 +30,15 @@ public class Node<T> {
         this.parent = parent;
         this.weight = weight;
     }
+
+    public Node(Node<T> parent, int weight) {
+        this.weight = weight;
+        this.parent = parent;
+    }
+
+    /*public List<Stack<Node<T>>> getSubtrees() {
+        return subtrees;
+    }*/
 
     public List<Node<T>> getChildren() {
         return children;
@@ -50,7 +62,7 @@ public class Node<T> {
     }
 
     public void addChild(Node<T> child) {
-        child.setParent(this);
+       // child.setParent(this);
         this.children.add(child);
     }
 
@@ -85,47 +97,37 @@ public class Node<T> {
         this.weight = weight;
     }
 
-    public List<Node<T>> getAllProperSubtrees(int maxWeight){
-        List<Node<T>> resultList = new ArrayList<>();
-        int curWeight = 0;
-        //List<Node<T>> level = new ArrayList<>();
-        Queue<Node<T>> level = new LinkedList<> ();
-        //может стэк из List<Node>? и добавляем children
-        Stack<Node<T>> stack = new Stack<>();
-        Node<T> top = this;
-        do{
-            if(top.weight + curWeight <= maxWeight){
-                stack.push(top);
-            }
-            else {
 
-            }
-            //
-            level.addAll(top.children);
-            if(!level.isEmpty()){
-                top = level.poll();
+    public Stack<Node<T>> recursionPass(Stack<Node<T>> chain, int maxWeight, List< Stack<Node<T>> > subtrees ){
+        Stack< Node<T> > newChain = new Stack<>();
+        if(getSumWeight(chain) + this.weight <= maxWeight) {
+            //Stack< Node<T> > newChain = new Stack<>();
+            newChain.addAll(chain);
+            newChain.add(this);
+            subtrees.add(newChain);
+            for (Node<T> node: this.children) {
+                chain = node.recursionPass(newChain, maxWeight, subtrees);
+                //newChain = node.recursionPass(newChain, maxWeight, subtrees);
             }
 
-        }while (!stack.isEmpty());
+        }
 
-
-        /*if(this.weight <= maxWeight)
-            resultList.add(this);
-        else
-            return resultList;
-        for (Node<T> node : this.children) {
-
-        }*/
-
-
-        return  resultList;
+        //return newChain;
+        return chain;
     }
 
-    /*public List<Node<T>> getSubtree(int maxWeight, int curWeight, List<Node<T>> subtree){
+    private int getSumWeight(Collection< Node<T> > col){
+        int sum = 0;
+        for ( Node<T> node : col ) {
+            sum += node.weight;
+        }
+        return sum;
+    }
 
 
-        return subtree;
-    }*/
+
+
+
 
 
 }
