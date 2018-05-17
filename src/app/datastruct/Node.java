@@ -6,11 +6,9 @@ import java.util.*;
 public class Node<T> {
     private List<Node<T>> children = new LinkedList<Node<T>>();
     private Node<T> parent = null;
-    private List<Node<T>> brothers = new LinkedList<Node<T>>();
     private T data = null;
     private int weight = 0;
 
-    //private List< Stack<Node<T>> > subtrees = new ArrayList<>();
     private static int maxSubWeight = 13;
 
     public Node(T data) {
@@ -46,22 +44,11 @@ public class Node<T> {
         return children;
     }
 
-    public List<Node<T>> getBrothers() {
-        return brothers;
-    }
-
     public void setParent(Node<T> parent) {
-        this.brothers.addAll(parent.children);
-        for (Node<T> node: parent.children) {
-            node.addBrother(this);
-        }
         parent.addChild(this);
         this.parent = parent;
     }
 
-    public void addBrother(Node<T> brother) {
-        this.brothers.add(brother);
-    }
 
 
     public void addChild(T data) {
@@ -133,5 +120,38 @@ public class Node<T> {
         }
         return sum;
     }
+
+    public List<Node<T>> treeTravel(Node<T> root, int maxWeight){
+        List<Node<T>> result = new ArrayList<>();
+
+        return result;
+    }
+
+    public Node<T> getSubtree(Node<T> root, int maxWeight){
+        if(root.weight <= maxWeight) {
+            Node<T> node = new Node<T>(root.data, root.parent, root.weight);
+            System.out.println(node.weight);
+            for (int cnt = 0; cnt < root.children.size(); cnt++) {
+                Node<T> child = new Node<>(root.children.get(cnt).data, node, root.children.get(cnt).weight);
+                node.addChild(child);
+                getSubtree(root.children.get(cnt),maxWeight - root.weight);
+            }
+            return node;
+        }
+        return root;
+    }
+
+
+    public void passTree(){
+        System.out.print(this.weight);
+        for (Node<T> node : this.children) {
+            node.passTree();
+        }
+    }
+
+
+
+
+
 
 }

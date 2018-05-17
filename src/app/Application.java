@@ -34,7 +34,7 @@ public class Application {
         node12.setParent(node8);
         node13.setParent(node8);
 
-        List< Node<String> > list = new ArrayList<>();
+        /*List< Node<String> > list = new ArrayList<>();
         List< Node<String> > workList = new ArrayList<>();
         List< List<Node<String>> > subtrees = new ArrayList<>();
         node1.recursionPass(list, 15, subtrees);
@@ -43,7 +43,11 @@ public class Application {
                 System.out.print(node.getWeight());
             }
             System.out.println();
-        }
+        }*/
+
+        Node<String> result = node1.getSubtree(node1,15);
+        System.out.println();
+        result.passTree();
 
     }
 }
