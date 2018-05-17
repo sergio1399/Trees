@@ -34,11 +34,11 @@ public class Application {
         node12.setParent(node8);
         node13.setParent(node8);
 
-        //List<Stack<Node<String>>> list = node1.getSubtrees(16);
-        Stack< Node<String> > stack = new Stack<>();
-        List< Stack<Node<String>> > subtrees = new ArrayList<>();
-        node1.recursionPass(stack, 15, subtrees);
-        for (Stack< Node<String> > chain: subtrees) {
+        List< Node<String> > list = new ArrayList<>();
+        List< Node<String> > workList = new ArrayList<>();
+        List< List<Node<String>> > subtrees = new ArrayList<>();
+        node1.recursionPass(list, 15, subtrees);
+        for (List< Node<String> > chain: subtrees) {
             for (Node<String> node: chain) {
                 System.out.print(node.getWeight());
             }

@@ -1,10 +1,12 @@
 package app.datastruct;
 
+import java.nio.file.WatchService;
 import java.util.*;
 
 public class Node<T> {
-    private List<Node<T>> children = new ArrayList<Node<T>>();
+    private List<Node<T>> children = new LinkedList<Node<T>>();
     private Node<T> parent = null;
+    private List<Node<T>> brothers = new LinkedList<Node<T>>();
     private T data = null;
     private int weight = 0;
 
@@ -44,10 +46,23 @@ public class Node<T> {
         return children;
     }
 
+    public List<Node<T>> getBrothers() {
+        return brothers;
+    }
+
     public void setParent(Node<T> parent) {
+        this.brothers.addAll(parent.children);
+        for (Node<T> node: parent.children) {
+            node.addBrother(this);
+        }
         parent.addChild(this);
         this.parent = parent;
     }
+
+    public void addBrother(Node<T> brother) {
+        this.brothers.add(brother);
+    }
+
 
     public void addChild(T data) {
         Node<T> child = new Node<T>(data);
@@ -62,7 +77,6 @@ public class Node<T> {
     }
 
     public void addChild(Node<T> child) {
-       // child.setParent(this);
         this.children.add(child);
     }
 
@@ -98,23 +112,19 @@ public class Node<T> {
     }
 
 
-    public Stack<Node<T>> recursionPass(Stack<Node<T>> chain, int maxWeight, List< Stack<Node<T>> > subtrees ){
-        Stack< Node<T> > newChain = new Stack<>();
+    public List<Node<T>> recursionPass(List<Node<T>> chain, int maxWeight, List< List<Node<T>> > subtrees){
+        List< Node<T> > newChain = new ArrayList<>();
+        newChain.addAll(chain);
         if(getSumWeight(chain) + this.weight <= maxWeight) {
-            //Stack< Node<T> > newChain = new Stack<>();
-            newChain.addAll(chain);
             newChain.add(this);
             subtrees.add(newChain);
             for (Node<T> node: this.children) {
                 chain = node.recursionPass(newChain, maxWeight, subtrees);
-                //newChain = node.recursionPass(newChain, maxWeight, subtrees);
             }
-
         }
-
-        //return newChain;
         return chain;
     }
+
 
     private int getSumWeight(Collection< Node<T> > col){
         int sum = 0;
@@ -123,11 +133,5 @@ public class Node<T> {
         }
         return sum;
     }
-
-
-
-
-
-
 
 }
