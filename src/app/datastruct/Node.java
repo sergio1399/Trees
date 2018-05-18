@@ -3,7 +3,7 @@ package app.datastruct;
 import java.util.*;
 
 public class Node<T> {
-    private List<Node<T>> children = new LinkedList<Node<T>>();
+    private List<Node<T>> children = new ArrayList<Node<T>>();
     private Node<T> parent = null;
     private T data = null;
     private int weight = 0;
@@ -64,6 +64,23 @@ public class Node<T> {
     public void addChild(Node<T> child) {
         //child.setParent(this);
        this.children.add(child);
+    }
+
+    public void removeChild(Node<T> child){
+        for (int i = 0; i < this.children.size(); i++) {
+            if(child.equals(this.children.get(i))){
+                child.parent = null;
+                this.children.remove(i);
+                break;
+            }
+        }
+    }
+
+    public void removeAllChildren(){
+        for (Node<T> node: this.children) {
+            node.parent = null;
+        }
+        this.children.clear();
     }
 
     public T getData() {
@@ -158,18 +175,28 @@ public class Node<T> {
     }
 
     public List<Node<T>> getSubtree(Node<T> root, int maxWeight, Node<T> newTree, List<Node<T>> result){
-            for (int cnt = 0; cnt < root.children.size(); cnt++) {
-                if(root.children.get(cnt).weight <= maxWeight) {
-                    Node<T> child = new Node<>(root.children.get(cnt).data, root.children.get(cnt).weight);
-                    child.setParent(newTree);
-                    getSubtree(root.children.get(cnt), maxWeight - root.weight, newTree.children.get(cnt), result);
-                }
-                else{
-                    Node<T> toAddTree = copyTree(newTree.getRoot());
-                    result.add(toAddTree);
-                }
-            }
+        if(root.isLeaf()){
+            Node<T> toAddTree = copyTree(newTree.getRoot());
+            root.setWeight(0);
+            result.add(toAddTree);
+        }
+        else {
+                for (int cnt = 0; cnt < root.children.size(); cnt++) {
+                    if (root.children.get(cnt).weight != 0 && root.children.get(cnt).weight <= maxWeight) {
+                        Node<T> child = new Node<>(root.children.get(cnt).data, root.children.get(cnt).weight);
+                        child.setParent(newTree);
+                        getSubtree(root.children.get(cnt), maxWeight - root.weight, newTree.children.get(cnt), result);
 
+                    } else {
+                        if (root.weight != 0) {
+                            Node<T> toAddTree = copyTree(newTree.getRoot());
+                            root.setWeight(0);
+                            result.add(toAddTree);
+                        }
+                    }
+                }
+                newTree.removeAllChildren();
+        }
 
 
         return result;

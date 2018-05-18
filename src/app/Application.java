@@ -35,7 +35,7 @@ public class Application {
         node13.setParent(node8);
 
 
-        List<Node<String>> result = node1.treeTravel(15);
+        List<Node<String>> result = node1.treeTravel(6);
 
         for (Node<String> node : result ) {
             node.passTree();
