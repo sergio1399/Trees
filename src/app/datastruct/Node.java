@@ -1,6 +1,5 @@
 package app.datastruct;
 
-import java.nio.file.WatchService;
 import java.util.*;
 
 public class Node<T> {
@@ -49,8 +48,6 @@ public class Node<T> {
         this.parent = parent;
     }
 
-
-
     public void addChild(T data) {
         Node<T> child = new Node<T>(data);
         child.setParent(this);
@@ -63,8 +60,10 @@ public class Node<T> {
         this.children.add(child);
     }
 
+
     public void addChild(Node<T> child) {
-        this.children.add(child);
+        //child.setParent(this);
+       this.children.add(child);
     }
 
     public T getData() {
@@ -98,8 +97,35 @@ public class Node<T> {
         this.weight = weight;
     }
 
+    @Override
+    public String toString() {
+        return "Node{" +
+                "data=" + data +
+                ", weight=" + weight +
+                '}';
+    }
 
-    public List<Node<T>> recursionPass(List<Node<T>> chain, int maxWeight, List< List<Node<T>> > subtrees){
+    public Node<T> copyTree(Node<T> source) {
+        if (source == null) {
+            // base case
+            return null;
+        }
+        Node<T> copy = new Node(source.data, source.weight);
+        for (Node<T> child : source.children) {
+            copy.children.add(copyTree(child));
+        }
+        return copy;
+    }
+
+    public Node<T> getRoot(){
+        Node<T> root = this;
+        while (root.parent != null){
+            root = root.parent;
+        }
+        return root;
+    }
+
+    /*public List<Node<T>> recursionPass(List<Node<T>> chain, int maxWeight, List< List<Node<T>> > subtrees){
         List< Node<T> > newChain = new ArrayList<>();
         newChain.addAll(chain);
         if(getSumWeight(chain) + this.weight <= maxWeight) {
@@ -119,35 +145,44 @@ public class Node<T> {
             sum += node.weight;
         }
         return sum;
+    }*/
+
+    public List<Node<T>> treeTravel(int maxWeight){
+        if(this.weight > maxWeight)
+            return Collections.emptyList();
+        Node<T> newTree = new Node<>(this.data, this.weight);
+        List<Node<T>> result = new ArrayList<>();
+        Node<T> root = copyTree(this);
+        result = getSubtree(root, maxWeight, newTree, result);
+        return result;
     }
 
-    public List<Node<T>> treeTravel(Node<T> root, int maxWeight){
-        List<Node<T>> result = new ArrayList<>();
+    public List<Node<T>> getSubtree(Node<T> root, int maxWeight, Node<T> newTree, List<Node<T>> result){
+            for (int cnt = 0; cnt < root.children.size(); cnt++) {
+                if(root.children.get(cnt).weight <= maxWeight) {
+                    Node<T> child = new Node<>(root.children.get(cnt).data, root.children.get(cnt).weight);
+                    child.setParent(newTree);
+                    getSubtree(root.children.get(cnt), maxWeight - root.weight, newTree.children.get(cnt), result);
+                }
+                else{
+                    Node<T> toAddTree = copyTree(newTree.getRoot());
+                    result.add(toAddTree);
+                }
+            }
+
+
 
         return result;
     }
 
-    public Node<T> getSubtree(Node<T> root, int maxWeight){
-        if(root.weight <= maxWeight) {
-            Node<T> node = new Node<T>(root.data, root.parent, root.weight);
-            System.out.println(node.weight);
-            for (int cnt = 0; cnt < root.children.size(); cnt++) {
-                Node<T> child = new Node<>(root.children.get(cnt).data, node, root.children.get(cnt).weight);
-                node.addChild(child);
-                getSubtree(root.children.get(cnt),maxWeight - root.weight);
-            }
-            return node;
-        }
-        return root;
-    }
-
 
     public void passTree(){
-        System.out.print(this.weight);
+        System.out.print(this);
         for (Node<T> node : this.children) {
             node.passTree();
         }
     }
+
 
 
 
