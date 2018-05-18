@@ -142,6 +142,17 @@ public class Node<T> {
         return root;
     }
 
+    public int getAllTreeWeight(){
+        if(this.isLeaf())
+            return this.weight;
+        int result = 0;
+        for(Node<T> node : this.children){
+            result += node.getAllTreeWeight();
+        }
+        result += this.weight;
+        return result;
+    }
+
     /*public List<Node<T>> recursionPass(List<Node<T>> chain, int maxWeight, List< List<Node<T>> > subtrees){
         List< Node<T> > newChain = new ArrayList<>();
         newChain.addAll(chain);
@@ -175,6 +186,30 @@ public class Node<T> {
     }
 
     public List<Node<T>> getSubtree(Node<T> root, int maxWeight, Node<T> newTree, List<Node<T>> result){
+        if(root.isLeaf() && root.weight != 0){
+            Node<T> toAddTree = copyTree(newTree.getRoot());
+            root.setWeight(0);
+            result.add(toAddTree);
+        }
+        else {
+            for (int cnt = 0; cnt < root.children.size(); cnt++) {
+                if (root.children.get(cnt).weight != 0 && root.children.get(cnt).weight <= maxWeight - newTree.getRoot().getAllTreeWeight()) {
+                    Node<T> child = new Node<>(root.children.get(cnt).data, root.children.get(cnt).weight);
+                    child.setParent(newTree);
+                    getSubtree(root.children.get(cnt), maxWeight - root.weight, child, result);
+
+                } else {
+
+                }
+            }
+            newTree.removeAllChildren();
+        }
+
+
+        return result;
+    }
+
+   /* public List<Node<T>> getSubtree(Node<T> root, int maxWeight, Node<T> newTree, List<Node<T>> result){
         if(root.isLeaf()){
             Node<T> toAddTree = copyTree(newTree.getRoot());
             root.setWeight(0);
@@ -182,7 +217,7 @@ public class Node<T> {
         }
         else {
                 for (int cnt = 0; cnt < root.children.size(); cnt++) {
-                    if (root.children.get(cnt).weight != 0 && root.children.get(cnt).weight <= maxWeight) {
+                    if (root.children.get(cnt).weight != 0 && root.children.get(cnt).weight <= (maxWeight - root.weight) ) {
                         Node<T> child = new Node<>(root.children.get(cnt).data, root.children.get(cnt).weight);
                         child.setParent(newTree);
                         getSubtree(root.children.get(cnt), maxWeight - root.weight, newTree.children.get(cnt), result);
@@ -201,7 +236,7 @@ public class Node<T> {
 
         return result;
     }
-
+*/
 
     public void passTree(){
         System.out.print(this);
@@ -209,10 +244,6 @@ public class Node<T> {
             node.passTree();
         }
     }
-
-
-
-
 
 
 
